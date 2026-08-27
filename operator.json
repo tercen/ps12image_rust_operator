@@ -5,6 +5,6 @@
   "communicationProtocol": "grpc",
   "authors": ["Tercen"],
   "urls": ["https://github.com/tercen/ps12image_rust_operator"],
-  "container": "ghcr.io/tercen/ps12image_rust_operator:0.1.0",
+  "container": "ghcr.io/tercen/ps12image_rust_operator:0.1.1",
   "properties": []
 }
