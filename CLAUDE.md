@@ -29,7 +29,13 @@ strings (ijtiff may not surface the PS12 private tags), this port is a
 superset: same columns, real values. Adjust `src/tags.rs` mappings only
 against that evidence.
 
-## The Tercen unit test (`tests/test.json`) — TODO before wide release
+## The Tercen unit test (`tests/test.json`) — REQUIRED for a green release
+
+Learned on 0.1.0: `tercenctl operator install` fails with
+`operator.run.test.not.found` when `tests/` is absent — the install-check
+requires a unit test, full stop. 0.1.0 is a red release (image pushed and
+pullable, GitHub Release missing); the first green release is 0.1.1 with
+the golden test.
 
 Golden files must come from a real run (deploy-tercen-library skill §5):
 run this operator in Studio on the test archive, export output +
