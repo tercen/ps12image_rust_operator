@@ -1,0 +1,48 @@
+[package]
+name = "ps12image_operator"
+version = "0.1.0"
+edition = "2021"
+authors = ["Tercen"]
+
+[lib]
+name = "ps12image_operator"
+path = "src/lib.rs"
+
+# Production binary invoked by Tercen (--taskId / --serviceUri / --token).
+[[bin]]
+name = "ps12image_operator"
+path = "src/main.rs"
+
+# Local development binary reading TERCEN_* env vars instead of CLI args.
+[[bin]]
+name = "dev"
+path = "src/bin/dev.rs"
+
+[dependencies]
+# Tercen gRPC SDK: client, context, table upload.
+tercen-rs = { git = "https://github.com/tercen/tercen-rs", branch = "main" }
+
+tokio = { version = "1.49", features = ["rt-multi-thread", "macros", "time"] }
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Result DataFrame construction (tercen-rs ships polars transitively but we
+# use it directly).
+polars = { version = "0.51", features = ["lazy", "dtype-full", "csv"] }
+
+# Image ZIPs arrive as Tercen file documents — download then extract.
+zip = "0.6"
+
+# gRPC types for FileService request/response (server streaming download).
+tonic = "0.14"
+
+# TIFF metadata extraction — the whole point of this operator. We read the
+# PamStation PS12 private tags (65050..65062) plus standard DateTime.
+tiff = "0.9"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
