@@ -114,7 +114,6 @@ fn value_to_string(v: &tiff::decoder::ifd::Value) -> String {
         Ascii(s) => s.trim_end_matches('\0').trim().to_string(),
         Byte(x) => x.to_string(),
         Short(x) => x.to_string(),
-        SShort(x) => x.to_string(),
         Signed(x) => x.to_string(),
         SignedBig(x) => x.to_string(),
         Unsigned(x) => x.to_string(),
