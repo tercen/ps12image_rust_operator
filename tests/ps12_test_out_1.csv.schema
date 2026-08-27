@@ -1,0 +1,377 @@
+{
+  "kind": "ComputedTableSchema",
+  "isDeleted": false,
+  "description": "",
+  "name": "26d33c4a-6cc1-454a-8e29-119d279a9e35",
+  "acl": {
+    "kind": "Acl",
+    "owner": "admin",
+    "aces": []
+  },
+  "createdDate": {
+    "kind": "Date",
+    "value": "2026-08-27T20:44:03.807650Z"
+  },
+  "lastModifiedDate": {
+    "kind": "Date",
+    "value": "2026-08-27T20:44:03.807650Z"
+  },
+  "urls": [],
+  "tags": [],
+  "meta": [],
+  "url": {
+    "kind": "Url",
+    "uri": ""
+  },
+  "version": "",
+  "isPublic": false,
+  "projectId": "655463fd6d35cb71006394c2a00009f1",
+  "folderId": "",
+  "nRows": 4,
+  "columns": [
+    {
+      "kind": "ColumnSchema",
+      "id": "47279427-06b7-4866-838a-7b2ede1712e9",
+      "name": ".ci",
+      "type": "int32",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "11c9805e-c615-41c1-a261-460b1dd9a267",
+      "name": "ds0.documentId",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "bff1ac60-235d-4a43-ba95-6c433021aec3",
+      "name": "ds0.path",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "619acf0c-7a65-4afa-b204-210b4a3eddef",
+      "name": "ds0.Image",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "74a4e45e-c716-4137-93dd-ca69ad0a05e4",
+      "name": "ds0.DateTime",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "92596617-5b13-4d9a-abdb-2149a2ee2748",
+      "name": "ds0.Barcode",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "7db9e690-7feb-4a53-a67e-e6201a6617e8",
+      "name": "ds0.Col",
+      "type": "double",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "54c003ca-1b93-4604-98dd-001f8786b526",
+      "name": "ds0.Cycle",
+      "type": "double",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "43736d02-6b98-490f-b2cb-dbdebf6a363d",
+      "name": "ds0.Exposure Time",
+      "type": "double",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "0b08f7c1-a759-4e1d-b851-4b0e4490f485",
+      "name": "ds0.Filter",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "1f5ca658-276d-49d9-92e8-29209217e579",
+      "name": "ds0.PS12",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "ce88ef93-fbbc-4a52-8f12-663d8c69473a",
+      "name": "ds0.Row",
+      "type": "double",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "c72d96f4-2a66-44d8-8a4b-c43549a1c31b",
+      "name": "ds0.Temperature",
+      "type": "double",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "c9ccafca-ed91-46d8-ada4-914ad50a74f2",
+      "name": "ds0.Timestamp",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "2152ed95-ffdf-49cc-8561-f6c37aad26b3",
+      "name": "ds0.Instrument Unit",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    },
+    {
+      "kind": "ColumnSchema",
+      "id": "6fdb7a5a-f039-4754-82a0-201302771810",
+      "name": "ds0.RunId",
+      "type": "string",
+      "nRows": 0,
+      "size": -1,
+      "metaData": {
+        "kind": "ColumnSchemaMetaData",
+        "sort": [],
+        "ascending": true,
+        "quartiles": [],
+        "properties": []
+      },
+      "storageSize": -1.0
+    }
+  ],
+  "dataDirectory": "default/c1/e3/e3c185fffd2e4591824487765002832c",
+  "relation": {
+    "kind": "Relation",
+    "id": "701e2bcf-8d5f-4c02-8d6b-d4ba137c2322"
+  },
+  "size": 0,
+  "storageSize": 2360.0,
+  "query": {
+    "kind": "CubeQuery",
+    "relation": {
+      "kind": "SimpleRelation",
+      "id": "655463fd6d35cb71006394c2a000439d",
+      "index": 0
+    },
+    "colColumns": [
+      {
+        "kind": "Factor",
+        "name": "documentId",
+        "type": "string"
+      }
+    ],
+    "rowColumns": [],
+    "axisQueries": [
+      {
+        "kind": "CubeAxisQuery",
+        "pointSize": 0,
+        "chartType": "",
+        "yAxis": {
+          "kind": "Factor",
+          "name": "",
+          "type": ""
+        },
+        "yAxisSettings": {
+          "kind": "AxisSettings",
+          "meta": []
+        },
+        "xAxis": {
+          "kind": "Factor",
+          "name": "",
+          "type": ""
+        },
+        "xAxisSettings": {
+          "kind": "AxisSettings",
+          "meta": []
+        },
+        "errors": [],
+        "labels": [],
+        "colors": [],
+        "preprocessors": []
+      }
+    ],
+    "filters": {
+      "kind": "Filters",
+      "removeNaN": true,
+      "namedFilters": []
+    },
+    "operatorSettings": {
+      "kind": "OperatorSettings",
+      "namespace": "ds0",
+      "operatorRef": {
+        "kind": "OperatorRef",
+        "name": "PS12 images (Rust)",
+        "version": "97d5bf04f855d08e49a9ac82033488165c3fd245",
+        "operatorId": "655463fd6d35cb71006394c2a0001d90",
+        "operatorKind": "DockerOperator",
+        "propertyValues": [],
+        "url": {
+          "kind": "Url",
+          "uri": "https://github.com/tercen/ps12image_rust_operator"
+        },
+        "operatorSpec": {
+          "kind": "OperatorSpec",
+          "ontologyUri": "",
+          "ontologyVersion": "",
+          "inputSpecs": [],
+          "outputSpecs": [],
+          "outputSpecsV2": []
+        }
+      },
+      "environment": [],
+      "operatorModel": {
+        "kind": "OperatorModel"
+      }
+    },
+    "qtHash": "655463fd6d35cb71006394c2a00071c1",
+    "columnHash": "655463fd6d35cb71006394c2a000756b",
+    "rowHash": "655463fd6d35cb71006394c2a0007b5c"
+  }
+}

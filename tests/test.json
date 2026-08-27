@@ -1,0 +1,17 @@
+{
+  "kind": "OperatorUnitTest",
+  "name": "ps12_metadata_4_images",
+  "namespace": "ds0",
+  "inputFileUris": ["ps12_test_images.zip"],
+  "inputDataUri": "ps12_test_input.csv",
+  "outputDataUri": ["ps12_test_out_1.csv", "ps12_test_out_2.csv"],
+  "columns": ["documentId"],
+  "rows": [],
+  "colors": [],
+  "labels": [],
+  "yAxis": "",
+  "xAxis": "",
+  "equalityMethod": "R2",
+  "r2": 0.99,
+  "skipColumns": ["ds0.documentId", "documentId"]
+}
