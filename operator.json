@@ -1,10 +1,16 @@
 {
   "name": "PS12 images (Rust)",
-  "description": "Extracts PamStation-12 image metadata (PS12 TIFF tags) from an image ZIP into a table: one row per image with barcode, row/col, cycle, exposure time, filter, temperature and timestamps. Pure-Rust port of pamgene/ps12image_operator — no pixel data is decoded.",
-  "tags": ["image analysis"],
+  "description": "Extracts PamStation-12 image metadata (PS12 TIFF tags) from an image ZIP into a table: one row per image with barcode, row/col, cycle, exposure time, filter, temperature and timestamps. Pure-Rust port of pamgene/ps12image_operator \u2014 no pixel data is decoded.",
+  "tags": [
+    "image analysis"
+  ],
   "communicationProtocol": "grpc",
-  "authors": ["Tercen"],
-  "urls": ["https://github.com/tercen/ps12image_rust_operator"],
-  "container": "ghcr.io/tercen/ps12image_rust_operator:0.1.1",
+  "authors": [
+    "Tercen"
+  ],
+  "urls": [
+    "https://github.com/tercen/ps12image_rust_operator"
+  ],
+  "container": "ghcr.io/tercen/ps12image_rust_operator:0.1.2",
   "properties": []
 }

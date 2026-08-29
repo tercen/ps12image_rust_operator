@@ -1,7 +1,9 @@
 //! Archive download + image discovery.
 //!
-//! Downloads the documentId's bytes via `FileService.download`, extracts
-//! the ZIP, and returns the image TIFF paths:
+//! Streams the documentId's bytes via `FileService.download` to a temp
+//! file on disk (constant RAM regardless of archive size), extracts
+//! the ZIP entry-by-entry with a small fixed buffer, and returns the
+//! image TIFF paths:
 //!
 //!   1. Preferred: every `*.tif` under an `ImageResults/` directory —
 //!      the PamStation export layout the R operator requires.
@@ -13,7 +15,7 @@
 //! died here with `mutate applied to an object of class "NULL"`.
 
 use anyhow::{anyhow, bail, Context, Result};
-use std::io::{Cursor, Read, Write};
+use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 use tercen_rs::context::ContextBase;
 use tonic::Request;
@@ -28,25 +30,33 @@ pub async fn fetch_images(
         .with_context(|| format!("create work root {}", work_root.display()))?;
 
     tracing::info!(doc_id, "downloading file");
-    let bytes = stream_file_bytes(ctx, doc_id).await?;
-    tracing::info!(doc_id, bytes = bytes.len(), "download complete");
+    let archive_path = work_root.join("archive.zip");
+    let archive_len = stream_file_to(ctx, doc_id, &archive_path).await?;
+    tracing::info!(doc_id, bytes = archive_len, "download complete");
 
+    let mut magic = [0u8; 4];
+    let n_magic = {
+        let mut f = std::fs::File::open(&archive_path)?;
+        f.read(&mut magic)?
+    };
     let looks_like_zip =
-        bytes.len() >= 4 && (&bytes[..4] == b"PK\x03\x04" || &bytes[..4] == b"PK\x05\x06");
+        n_magic >= 4 && (&magic == b"PK\x03\x04" || &magic == b"PK\x05\x06");
     if !looks_like_zip {
         bail!(
             "documentId {} is not a ZIP archive ({} bytes, magic {:02x?}). \
              ps12image expects the PamStation image export ZIP.",
             doc_id,
-            bytes.len(),
-            &bytes[..bytes.len().min(4)],
+            archive_len,
+            &magic[..n_magic.min(4)],
         );
     }
 
     let extracted = work_root.join("extracted");
     std::fs::create_dir_all(&extracted)?;
-    extract_zip(&bytes, &extracted)
+    extract_zip(&archive_path, &extracted)
         .with_context(|| format!("extract zip for doc {doc_id}"))?;
+    // The archive is extracted; free the disk copy before walking images.
+    let _ = std::fs::remove_file(&archive_path);
 
     // Preferred layout: */ImageResults/*.tif (matches the R operator's
     // `grep('*/ImageResults/*', f.names)`).
@@ -114,8 +124,9 @@ fn walk(dir: &Path, f: &mut impl FnMut(&Path)) -> Result<()> {
     Ok(())
 }
 
-/// Stream `FileService::download(file_document_id)` to completion.
-async fn stream_file_bytes(ctx: &ContextBase, doc_id: &str) -> Result<Vec<u8>> {
+/// Stream `FileService::download(file_document_id)` to `dest` on disk.
+/// Returns the byte count. RAM use is one gRPC chunk at a time.
+async fn stream_file_to(ctx: &ContextBase, doc_id: &str, dest: &Path) -> Result<u64> {
     use tercen_rs::client::proto::ReqDownload;
 
     let mut file_service = ctx
@@ -132,23 +143,30 @@ async fn stream_file_bytes(ctx: &ContextBase, doc_id: &str) -> Result<Vec<u8>> {
         .map_err(|e| anyhow!("file_service.download({doc_id}) failed: {e}"))?
         .into_inner();
 
-    let mut buf = Vec::new();
+    let mut out = std::io::BufWriter::new(
+        std::fs::File::create(dest)
+            .with_context(|| format!("create {}", dest.display()))?,
+    );
+    let mut total: u64 = 0;
     while let Some(chunk) = stream
         .message()
         .await
         .map_err(|e| anyhow!("stream chunk for {doc_id}: {e}"))?
     {
-        buf.extend_from_slice(&chunk.result);
+        out.write_all(&chunk.result)?;
+        total += chunk.result.len() as u64;
     }
-    if buf.is_empty() {
+    out.flush()?;
+    if total == 0 {
         bail!("documentId {} download returned 0 bytes", doc_id);
     }
-    Ok(buf)
+    Ok(total)
 }
 
-/// Extract a ZIP archive (in-memory) into `dest`.
-fn extract_zip(bytes: &[u8], dest: &Path) -> Result<()> {
-    let reader = Cursor::new(bytes);
+/// Extract a ZIP archive (on disk) into `dest`, streaming each entry.
+fn extract_zip(archive_path: &Path, dest: &Path) -> Result<()> {
+    let reader = std::fs::File::open(archive_path)
+        .with_context(|| format!("open {}", archive_path.display()))?;
     let mut archive = zip::ZipArchive::new(reader).context("open zip archive")?;
     for i in 0..archive.len() {
         let mut entry = archive
@@ -166,9 +184,7 @@ fn extract_zip(bytes: &[u8], dest: &Path) -> Result<()> {
                 std::fs::create_dir_all(parent)?;
             }
             let mut out = std::fs::File::create(&outpath)?;
-            let mut data = Vec::with_capacity(entry.size() as usize);
-            entry.read_to_end(&mut data)?;
-            out.write_all(&data)?;
+            std::io::copy(&mut entry, &mut out)?;
         }
     }
     Ok(())
