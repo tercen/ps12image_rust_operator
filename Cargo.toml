@@ -41,6 +41,10 @@ tonic = "0.14"
 # PamStation PS12 private tags (65050..65062) plus standard DateTime.
 tiff = "0.9"
 
+[dev-dependencies]
+# Scratch directories for the extraction tests.
+tempfile = "3"
+
 [profile.release]
 opt-level = 3
 lto = "fat"

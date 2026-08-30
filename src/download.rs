@@ -189,3 +189,116 @@ fn extract_zip(archive_path: &Path, dest: &Path) -> Result<()> {
     }
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*; // brings std::io::Write in via the module head
+
+    const FIXTURE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/ps12_test_images.zip");
+
+    /// Build a zip on disk from (entry name, contents) pairs. Entry names are
+    /// written verbatim so a traversal name survives to the reader.
+    fn write_zip(path: &Path, entries: &[(&str, &[u8])]) {
+        let file = std::fs::File::create(path).unwrap();
+        let mut zw = zip::ZipWriter::new(file);
+        let opts: zip::write::FileOptions =
+            zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored);
+        for (name, body) in entries {
+            zw.start_file(*name, opts).unwrap();
+            zw.write_all(body).unwrap();
+        }
+        zw.finish().unwrap();
+    }
+
+    #[test]
+    fn extracts_the_pamstation_layout_and_finds_every_image() {
+        // The shape the R operator required: */ImageResults/*.tif. This is the
+        // branch that used to die with `mutate applied to an object of class
+        // "NULL"` when it found nothing.
+        let dir = tempfile::tempdir().unwrap();
+        let dest = dir.path().join("extracted");
+        std::fs::create_dir_all(&dest).unwrap();
+
+        extract_zip(Path::new(FIXTURE), &dest).unwrap();
+
+        let mut images = collect_tiffs(&dest, true).unwrap();
+        images.sort();
+        assert_eq!(images.len(), 4, "fixture holds four TIFFs");
+        for p in &images {
+            assert!(
+                p.components()
+                    .any(|c| c.as_os_str().to_string_lossy() == "ImageResults"),
+                "{} is not under ImageResults/",
+                p.display()
+            );
+        }
+
+        // Sorting is what makes the output table row order reproducible.
+        let mut resorted = images.clone();
+        resorted.sort();
+        assert_eq!(images, resorted);
+
+        // Extraction is entry-by-entry, so every file lands whole.
+        for p in &images {
+            assert_eq!(std::fs::metadata(p).unwrap().len(), 726371);
+        }
+    }
+
+    #[test]
+    fn a_flat_archive_falls_back_instead_of_failing() {
+        // Instrument exports without an ImageResults/ folder used to crash the
+        // R operator outright; the fallback accepts .tif anywhere.
+        let dir = tempfile::tempdir().unwrap();
+        let archive = dir.path().join("flat.zip");
+        write_zip(
+            &archive,
+            &[
+                ("scan_a.tif", b"II\x2a\x00stub"),
+                ("scan_b.TIF", b"II\x2a\x00stub"),
+                ("readme.txt", b"not an image"),
+            ],
+        );
+        let dest = dir.path().join("extracted");
+        std::fs::create_dir_all(&dest).unwrap();
+        extract_zip(&archive, &dest).unwrap();
+
+        // Strict pass finds nothing — there is no ImageResults/ component.
+        assert!(collect_tiffs(&dest, true).unwrap().is_empty());
+
+        // Fallback finds both images and ignores the non-image entry. The
+        // extension match is case-insensitive, hence scan_b.TIF.
+        let found = collect_tiffs(&dest, false).unwrap();
+        assert_eq!(found.len(), 2, "got {found:?}");
+        assert!(found.iter().all(|p| p
+            .extension()
+            .unwrap()
+            .to_string_lossy()
+            .eq_ignore_ascii_case("tif")));
+    }
+
+    #[test]
+    fn a_traversing_entry_is_refused_rather_than_written_outside_the_destination() {
+        // zip-slip. `enclosed_name()` returning None for an escaping path is
+        // the only thing standing between a crafted archive and a write
+        // anywhere the operator user can reach, so pin it: extraction must
+        // fail, and nothing may appear outside the destination.
+        let dir = tempfile::tempdir().unwrap();
+        let archive = dir.path().join("evil.zip");
+        write_zip(&archive, &[("../escaped.tif", b"II\x2a\x00stub")]);
+
+        let dest = dir.path().join("extracted");
+        std::fs::create_dir_all(&dest).unwrap();
+
+        let err = extract_zip(&archive, &dest)
+            .expect_err("an entry escaping the destination must not extract");
+        assert!(
+            err.to_string().contains("invalid name"),
+            "unexpected error: {err}"
+        );
+
+        assert!(
+            !dir.path().join("escaped.tif").exists(),
+            "the traversing entry was written outside the destination"
+        );
+    }
+}

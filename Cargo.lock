@@ -2284,6 +2284,7 @@ version = "0.1.2"
 dependencies = [
  "anyhow",
  "polars",
+ "tempfile",
  "tercen-rs",
  "tiff",
  "tokio",
