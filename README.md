@@ -61,19 +61,23 @@ pixel data, and the result table is ~200 bytes per image.
 Measured with `cargo run --release --bin membench <archive.zip>` under
 `/usr/bin/time -v` (extract → tag read → DataFrame, the disk-side pipeline):
 
-| archive                          | images | max RSS |
-|----------------------------------|--------|---------|
-| tests/ps12_test_images.zip (1.2M)|      4 | 6.1 MB  |
-| synthetic 311M zip / 2.7G on disk|   1000 | 6.25 MB |
+| archive                          | images | max RSS  |
+|----------------------------------|--------|----------|
+| tests/ps12_test_images.zip (1.2M)|      4 | 6.1 MiB  |
+| synthetic 311M zip / 2.7G on disk|   1000 | 6.25 MiB |
+
+(`/usr/bin/time -v` reports max RSS in KiB, so these are MiB too.)
 
 `memory_model.json` therefore declares a **constant** model. Note the
 server's estimate formula is `intercept * PROD(coef * feature^exp) +
-offset * 1.5` (MB) — an `offset` is multiplied by 1.5, and with any
-feature present whose value is 0 (e.g. `n_main` on a documentId-only
-crosstab) the multiplicative part collapses to 0. A featureless constant
-`intercept` avoids both traps. 200 MB = measured core + headroom for the
-tokio/tonic runtime and cgroup writeback pressure; archive size lands on
-disk + reclaimable page cache, never anonymous RAM.
+offset * 1.5`, and its result is in **MiB**, not MB — `task_service.dart`
+returns `memoryEstimateMB * (1024 * 1024)`, so `intercept: 200` books
+209.7 MB. Two traps live in that formula: an `offset` is multiplied by
+1.5, and with any feature present whose value is 0 (e.g. `n_main` on a
+documentId-only crosstab) the multiplicative part collapses to 0. A
+featureless constant `intercept` avoids both. 200 MiB = measured core +
+headroom for the tokio/tonic runtime and cgroup writeback pressure;
+archive size lands on disk + reclaimable page cache, never anonymous RAM.
 
 Also note: on tercen < 1.0.22 the model only applies when the parent cube
 query is already cached at submit (fresh runs booked via the legacy
